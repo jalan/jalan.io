@@ -1,0 +1,6 @@
+baseurl = "http://jalan.io/"
+canonifyurls = true
+title = "jalan.io"
+
+[params]
+  author = "Jason Alan Palmer"
