@@ -2,7 +2,6 @@ html {
   font-family: sans-serif;
   font-size: 18px;
 }
-
 body {
   max-width: 900px;
   margin-left: auto;
@@ -10,11 +9,9 @@ body {
   padding-left: 20px;
   padding-right: 20px;
 }
-
 a {
   text-decoration: none;
 }
-
 header {
   text-align: center;
   margin-bottom: 48px;
@@ -31,28 +28,24 @@ header h2 {
   margin-bottom: 6px;
 }
 header p {
-  font-size: 18px;
   margin: 0;
 }
-
 article h1 {
   font-size: 32px;
 }
 article h2 {
   font-size: 24px;
 }
-
-div.post-list {
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 450px;
-}
-
 pre {
   background-color: #DDD;
   border-radius: 4px;
   margin-left: auto;
   margin-right: auto;
-  padding: 4px;
+  padding: 8px;
   width: 90%;
+}
+.post-list {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 450px;
 }

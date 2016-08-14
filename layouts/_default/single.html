@@ -8,15 +8,9 @@
   </head>
   <body>
     <header>
-      <h1>
-        <a href="{{ .Site.BaseURL }}">{{ .Site.Title }}</a>
-      </h1>
-      <h2>
-        {{ .Title }}
-      </h2>
-      <p>
-        {{ .Date.Format "2006-01-02" }}
-      </p>
+      <h1><a href="{{ .Site.BaseURL }}">{{ .Site.Title }}</a></h1>
+      <h2>{{ .Title }}</h2>
+      <p>{{ .Date.Format "2006-01-02" }}</p>
     </header>
     <article>
       {{ .Content }}

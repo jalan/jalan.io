@@ -8,20 +8,14 @@
   </head>
   <body>
     <header>
-      <h1>
-        {{ .Site.Title }}
-      </h1>
-      <h2>
-        Posts
-      </h2>
+      <h1>{{ .Site.Title }}</h1>
+      <h2>Posts</h2>
     </header>
     <article>
       <div class="post-list">
         <ul>
         {{ range .Data.Pages.ByDate.Reverse }}
-          <li>
-            <a href="{{ .Permalink }}">{{ .Date.Format "2006-01-02" }} - {{ .Title }}</a>
-          </li>
+          <li><a href="{{ .Permalink }}">{{ .Date.Format "2006-01-02" }} - {{ .Title }}</a></li>
         {{ end }}
         </ul>
       </div>
