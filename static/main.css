@@ -37,15 +37,21 @@ article h2 {
   font-size: 24px;
 }
 pre {
-  background-color: #DDD;
-  border-radius: 4px;
   margin-left: auto;
   margin-right: auto;
-  padding: 8px;
   width: 90%;
 }
 .post-list {
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 450px;
+  text-align: center;
+}
+.post-list ul {
+  display: inline-block;
+  margin: 0;
+  text-align: left;
+}
+footer {
+  text-align: center;
+}
+footer h1 {
+  margin: 48px;
 }
