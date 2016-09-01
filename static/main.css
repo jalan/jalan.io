@@ -37,9 +37,10 @@ article h2 {
   font-size: 24px;
 }
 pre {
+  font-size: 16px;
   margin-left: auto;
   margin-right: auto;
-  width: 90%;
+  width: 95%;
 }
 .post-list {
   text-align: center;
@@ -54,4 +55,10 @@ footer {
 }
 footer h1 {
   margin: 48px;
+}
+.footer-links {
+  margin: 48px;
+}
+.footer-links a {
+  margin: 0 12px;
 }
