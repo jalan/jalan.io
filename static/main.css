@@ -37,10 +37,16 @@ article h2 {
   font-size: 24px;
 }
 pre {
+  background-color: #111;
+  border-radius: 4px;
+  color: #EEE;
   font-size: 16px;
   margin-left: auto;
   margin-right: auto;
-  width: 95%;
+  padding: 8px;
+}
+code {
+  font-family: "Consolas", "Menlo", "Monaco", "Lucida Console", "Liberation Mono", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Courier New", monospace;
 }
 .post-list {
   text-align: center;
