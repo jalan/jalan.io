@@ -1,5 +1,8 @@
-baseurl = "http://jalan.io/"
-canonifyurls = true
+baseurl = "https://jalan.io/"
+disable404 = true
+disableRSS = true
+disableSitemap = true
+relativeURLs = true
 title = "jalan.io"
 
 [params]
