@@ -56,9 +56,10 @@ footer {
 footer h1 {
   margin: 48px;
 }
-.footer-links {
-  margin: 48px;
+footer a {
+  display: inline-block;
+  margin: 40px 12px;
 }
-.footer-links a {
-  margin: 0 12px;
+footer img {
+  display: block;
 }
