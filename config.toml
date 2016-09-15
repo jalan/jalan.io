@@ -5,5 +5,8 @@ disableSitemap = true
 relativeURLs = true
 title = "jalan.io"
 
+[blackfriday]
+  smartypants = false
+
 [params]
   author = "Jason Alan Palmer"
