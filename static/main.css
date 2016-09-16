@@ -13,25 +13,35 @@ a {
   text-decoration: none;
 }
 header {
+  margin: 48px;
   text-align: center;
-  margin-bottom: 48px;
 }
 header h1 {
   font-size: 48px;
-  margin: 48px;
 }
 header a {
   color: #000;
 }
-header h2 {
-  font-size: 36px;
-  margin-bottom: 6px;
+main {
+  text-align: center;
 }
-header p {
+main h1 {
+  margin: 48px;
+}
+main ul {
+  display: inline-block;
   margin: 0;
+  text-align: left;
 }
 article h1 {
   font-size: 32px;
+  margin-bottom: 8px;
+  text-align: center;
+}
+article time {
+  display: block;
+  margin-bottom: 40px;
+  text-align: center;
 }
 article h2 {
   font-size: 24px;
@@ -41,20 +51,11 @@ pre {
   border-radius: 4px;
   color: #EEE;
   font-size: 16px;
-  margin-left: auto;
-  margin-right: auto;
+  overflow-x: auto;
   padding: 8px;
 }
 code {
   font-family: "Consolas", "Menlo", "Monaco", "Lucida Console", "Liberation Mono", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Courier New", monospace;
-}
-.post-list {
-  text-align: center;
-}
-.post-list ul {
-  display: inline-block;
-  margin: 0;
-  text-align: left;
 }
 footer {
   text-align: center;
