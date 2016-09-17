@@ -46,6 +46,9 @@ article time {
 article h2 {
   font-size: 24px;
 }
+article img {
+  max-width: 100%;
+}
 pre {
   background-color: #111;
   border-radius: 4px;
