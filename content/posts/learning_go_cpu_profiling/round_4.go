@@ -16,10 +16,9 @@ var toNum = strings.NewReplacer(
 )
 
 const hashSize = 1 << 18
-const mask = hashSize - 1
 
 func hash(key uint64) int {
-	return int(key) & mask
+	return int(key) % hashSize
 }
 
 type entry struct {
