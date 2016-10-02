@@ -97,8 +97,8 @@ of `main`, building and running the program again saves a profile to
 	defer pprof.StopCPUProfile()
 ```
 
-The `[pprof]` tool can be used to analyze the resulting profile. Two of the
-most useful `pprof` features are the `top` command and the ability to export
+The [pprof] tool can be used to analyze the resulting profile. Two of the most
+useful `pprof` features are the `top` command and the ability to export
 callgraph images.
 
 [pprof]: https://github.com/google/pprof
