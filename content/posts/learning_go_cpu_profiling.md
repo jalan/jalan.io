@@ -1,6 +1,6 @@
 +++
-date = "2016-09-16"
-draft = true
+date = "2016-10-02"
+draft = false
 title = "Learning Go: CPU Profiling"
 +++
 
@@ -8,18 +8,20 @@ This is the first post in what I hope becomes a series about learning the Go
 programming language (golang) and tools. This time, let's create a simple
 program, profile it, and try to make it go fast.
 
+
 ## How about a game?
 
 [The Computer Language Benchmarks Game] is a fun source of simple program
 requirements. Their [k-nucleotide benchmark] appears to be one on which Go
-[does not perform very well], losing to 15 other languages at the time I begin
-this post. To make this exercise fun, we'll use an adaptation of that
-benchmark--not exactly that benchmark, but a fair representation of it. Here
-are our requirements:
+[has not performed the best], losing to 15 other languages at the time I first
+started playing the Benchmarks Game. To make this exercise fun, we'll use an
+adaptation of that benchmark &mdash; not exactly that benchmark, but a simple
+imitation of it, close enough that whatever we learn here can also help us
+there. These are our requirements:
 
 [The Computer Language Benchmarks Game]: http://benchmarksgame.alioth.debian.org/
 [k-nucleotide benchmark]: http://benchmarksgame.alioth.debian.org/u64q/knucleotide-description.html#knucleotide
-[does not perform very well]: http://benchmarksgame.alioth.debian.org/u64q/performance.php?test=knucleotide
+[has not performed the best]: http://benchmarksgame.alioth.debian.org/u64q/performance.php?test=knucleotide
 
 1. Read a DNA sequence from standard input. It will look something like this:
 
@@ -31,13 +33,15 @@ are our requirements:
         .
         .
 
-2. Count up all the subsequences of a given length.
+2. Count up all the different subsequences of a given length.
 
 3. Print the count for a specific subsequence, just to make sure everything
    works.
 
-The full input will be about 120 MB. We'll count up all subsequences of length
-18 and then print the count for `GGTATTTTAATTTATAGT`.
+The full input will be about 120 MB, the same input that is used in the
+Benchmarks Game. We'll count up all subsequences of length 18 and then print
+the count for `GGTATTTTAATTTATAGT`.
+
 
 ## Round 1
 
@@ -80,8 +84,8 @@ func count(dna []byte, length int) map[string]int {
 }
 ```
 
-It "takes" about 24 seconds to run on my machine and finds 893 instances of the
-specified subsequence. In order to see where the program spends these 24
+It takes about 23.9 seconds to run on my machine and finds 893 instances of the
+specified subsequence. In order to see where the program spends these 23.9
 seconds, we can add a bit of code to enable the CPU profiler. With
 `runtime/pprof` added to the imports and the following added to the beginning
 of `main`, building and running the program again saves a profile to
@@ -93,52 +97,56 @@ of `main`, building and running the program again saves a profile to
 	defer pprof.StopCPUProfile()
 ```
 
-The [pprof] tool can be used to analyze the resulting profile.
+The `[pprof]` tool can be used to analyze the resulting profile. Two of the
+most useful `pprof` features are the `top` command and the ability to export
+callgraph images.
 
 [pprof]: https://github.com/google/pprof
 
-
+The `top` command shows a list of the most expensive functions:
 
 ```
-$ go tool pprof round_1 round_1.prof
+$ go tool pprof round_1_prof round_1.prof
 Entering interactive mode (type "help" for commands)
 (pprof) top 8
-20950ms of 26430ms total (79.27%)
-Dropped 67 nodes (cum <= 132.15ms)
-Showing top 8 nodes out of 40 (cum >= 4710ms)
+23230ms of 27200ms total (85.40%)
+Dropped 65 nodes (cum <= 136ms)
+Showing top 8 nodes out of 36 (cum >= 4260ms)
       flat  flat%   sum%        cum   cum%
-    9130ms 34.54% 34.54%    11960ms 45.25%  runtime.mapaccess1_faststr
-    2420ms  9.16% 43.70%     3810ms 14.42%  runtime.mallocgc
-    2220ms  8.40% 52.10%     5080ms 19.22%  runtime.mapassign1
-    2110ms  7.98% 60.08%     2110ms  7.98%  runtime.memeqbody
-    1460ms  5.52% 65.61%    24500ms 92.70%  main.count
-    1410ms  5.33% 70.94%     1410ms  5.33%  runtime.aeshashbody
-    1290ms  4.88% 75.82%     1290ms  4.88%  runtime.memmove
-     910ms  3.44% 79.27%     4710ms 17.82%  runtime.rawstring
+   11330ms 41.65% 41.65%    14520ms 53.38%  runtime.mapaccess1_faststr
+    2730ms 10.04% 51.69%     3560ms 13.09%  runtime.mallocgc
+    2110ms  7.76% 59.45%     2110ms  7.76%  runtime.memeqbody
+    2060ms  7.57% 67.02%     2060ms  7.57%  runtime.aeshashbody
+    1800ms  6.62% 73.64%     4850ms 17.83%  runtime.mapassign1
+    1410ms  5.18% 78.82%    26420ms 97.13%  main.count
+    1140ms  4.19% 83.01%     1140ms  4.19%  runtime.memmove
+     650ms  2.39% 85.40%     4260ms 15.66%  runtime.rawstring
 ```
+
+The `png` command creates a callgraph image, with each node sized according to
+the function's cost:
+
+```
+$ go tool pprof -png round_1_prof round_1.prof > round_1.png
+```
+
+[![](round_1_small.png "Click for full image")](round_1.png)
+
 
 ## Round 2: Pointers
 
-Let's first focus on the third most expensive function in the pprof output:
-`runtime.mapassign1`. In Go, map elements cannot be modified, so every
+Let's ignore the most expensive functions for now and instead focus on
+`runtime.mapassign1`, since this will provide an easy optimization. In Go, map
+elements cannot be modified, so every
 
 ```go
 		counts[string(dna[i:i+length])]++
 ```
 
-is actually a map access, then an increment, and then a map assign. On each
-iteration through the count loop, we pay for two map operations.
-
-
-We can avoid almost all the map assigns by storing the counts themselves
-outside the map and storing pointers to the counts in the map.
-
-
-
-
-This can be
-verified with another `pprof` command, `disasm`, which shows the assembly for a
-given function.
+is a map access, then an increment, and then a map assign. On each iteration
+through the loop, we pay for two map operations. This can quickly be verified
+with another `pprof` command, `disasm`, which shows the Go assembly for all
+functions that match the command's argument.
 
 ```
 (pprof) disasm count
@@ -164,39 +172,293 @@ given function.
 .
 ```
 
+We can avoid almost all the map assigns by storing the counts themselves
+outside the map and storing pointers to the counts in the map. Then
+`runtime.mapassign1` will only be called when a new subsequence is encountered.
+Here is the resulting code:
 
+```go
+package main
 
+import (
+	"bufio"
+	"bytes"
+	"fmt"
+	"os"
+)
 
+func main() {
+	sequence := "GGTATTTTAATTTATAGT"
+	dna := read()
+	counts := count(dna, len(sequence))
+	seqCount := 0
+	p, ok := counts[sequence]
+	if ok {
+		seqCount = *p
+	}
+	fmt.Printf("%v\t%v\n", seqCount, sequence)
+}
 
+func read() []byte {
+	var buf bytes.Buffer
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		buf.WriteString(scanner.Text())
+	}
+	return buf.Bytes()
+}
 
-Instead of storing integers in a map, we can store pointers
+func count(dna []byte, length int) map[string]*int {
+	counts := make(map[string]*int)
+	for i := 0; i < len(dna)-length+1; i++ {
+		key := string(dna[i : i+length])
+		p, ok := counts[key]
+		if !ok {
+			p = new(int)
+			counts[key] = p
+		}
+		*p++
+	}
+	return counts
+}
+```
 
+This version runs in about 19.2 seconds, and if we look at the callgraph now,
+`runtime.mapassign1` is nowhere to be found! Of course, time is still spent
+running that function, but so little time that it is not shown by default.
 
-[go/issues/3117]: https://github.com/golang/go/issues/3117
+[![](round_2_small.png "Click for full image")](round_2.png)
+
 
 ## Round 3: Key Encoding
 
+Next we turn to the most obvious node in the callgraph, the gigantic
+`runtime.mapaccess2_faststr` in the middle. How to improve this? So far, we are
+using strings as our map keys. But what are we _really_ storing there?
+Subsequences. The subsequences happen to be encoded as strings, but they don't
+have to be. A more compact encoding might help.
 
+There are four possible elements in these subsequences, so each element can be
+represented in two bits. Here's one possible encoding:
+
+```
+A: 00b
+C: 01b
+G: 10b
+T: 11b
+```
+
+The subsequences of interest contain 18 elements, so a type with at least 36
+bits is required. A 64-bit integer will work. For example, the
+`GGTATTTTAATTTATAGT` subsequence can be represented as follows:
+
+```
+ G G T A T T T T A A T T T A T A G T
+101011001111111100001111110011001011b = 46438350027
+```
+
+Let's do part of the encoding change (mapping the letters to numbers) while the
+input is scanned in, and do the other part (converting each subsequence to a
+single integer) while the map is populated. Here is the result, which runs in
+about 8.7 seconds:
+
+```go
+package main
+
+import (
+	"bufio"
+	"bytes"
+	"fmt"
+	"os"
+	"strings"
+)
+
+var toNum = strings.NewReplacer(
+	"A", string(0),
+	"C", string(1),
+	"G", string(2),
+	"T", string(3),
+)
+
+func main() {
+	sequence := "GGTATTTTAATTTATAGT"
+	dna := read()
+	counts := count(dna, len(sequence))
+	seqCount := 0
+	p, ok := counts[encode([]byte(toNum.Replace(sequence)))]
+	if ok {
+		seqCount = *p
+	}
+	fmt.Printf("%v\t%v\n", seqCount, sequence)
+}
+
+func read() []byte {
+	var buf bytes.Buffer
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		buf.WriteString(toNum.Replace(scanner.Text()))
+	}
+	return buf.Bytes()
+}
+
+func count(dna []byte, length int) map[uint64]*int {
+	counts := make(map[uint64]*int)
+	for i := 0; i < len(dna)-length+1; i++ {
+		key := encode(dna[i : i+length])
+		p, ok := counts[key]
+		if !ok {
+			p = new(int)
+			counts[key] = p
+		}
+		*p++
+	}
+	return counts
+}
+
+func encode(sequence []byte) uint64 {
+	var num uint64
+	for _, char := range sequence {
+		num = (num << 2) | uint64(char)
+	}
+	return num
+}
+```
+
+[![](round_3_small.png "Click for full image")](round_3.png)
 
 
 ## Round 4: Faster Maps
 
+Many languages (Java and Python to name two) allow you to use custom hash
+functions; this can be used to increase map performance in special cases. Go
+does not allow for custom hash functions &mdash; you can hear more about that
+in [Keith Randall's Gophercon talk about maps]: hash functions are "hard to get
+right", so "Go gets it right for you."
+
+[Keith Randall's Gophercon talk about maps]: https://youtu.be/Tl7mi9QmLns
+
+I don't disagree with that assessment. Go maps are simple and mostly just do
+what I want. I shouldn't need to fiddle with anything. However, sometimes we
+just wanna go fast. While we can't customize Go's built-in maps, we can always
+implement our own. To keep the implementation work to a minimum, let's make a
+hash counter with the following features:
+
+ - a fixed table size
+ - collision resolution via separate chaining with linked lists
+ - a hash function that is just the input modulo the table size
+ - only two methods: `inc` to increment a value in the counter, and `get` to
+   fetch a count
+
+The version with a custom hash counter runs in about 6.2 seconds.
+
+```go
+package main
+
+import (
+	"bufio"
+	"bytes"
+	"fmt"
+	"os"
+	"strings"
+)
+
+var toNum = strings.NewReplacer(
+	"A", string(0),
+	"C", string(1),
+	"G", string(2),
+	"T", string(3),
+)
+
+const hashSize = 1 << 18
+
+func hash(key uint64) int {
+	return int(key) % hashSize
+}
+
+type entry struct {
+	key   uint64
+	value int
+	next  *entry
+}
+
+type hashCounter struct {
+	entries [hashSize]*entry
+}
+
+func (hc *hashCounter) get(key uint64) int {
+	for e := hc.entries[hash(key)]; e != nil; e = e.next {
+		if e.key == key {
+			return e.value
+		}
+	}
+	return 0
+}
+
+func (hc *hashCounter) inc(k uint64) {
+	h := hash(k)
+	p := &hc.entries[h]
+	for e := *p; e != nil; e = e.next {
+		if e.key == k {
+			e.value++
+			return
+		}
+	}
+	e := &entry{k, 1, nil}
+	if *p == nil {
+		*p = e
+	} else {
+		e.next = *p
+		*p = e
+	}
+}
+
+func main() {
+	sequence := "GGTATTTTAATTTATAGT"
+	dna := read()
+	counts := count(dna, len(sequence))
+	seqCount := counts.get(encode([]byte(toNum.Replace(sequence))))
+	fmt.Printf("%v\t%v\n", seqCount, sequence)
+}
+
+func read() []byte {
+	var buf bytes.Buffer
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		buf.WriteString(toNum.Replace(scanner.Text()))
+	}
+	return buf.Bytes()
+}
+
+func count(dna []byte, length int) (counts hashCounter) {
+	for i := 0; i < len(dna)-length+1; i++ {
+		key := encode(dna[i : i+length])
+		counts.inc(key)
+	}
+	return
+}
+
+func encode(sequence []byte) uint64 {
+	var num uint64
+	for _, char := range sequence {
+		num = (num << 2) | uint64(char)
+	}
+	return num
+}
+```
+
+[![](round_4_small.png "Click for full image")](round_4.png)
 
 
-## Results
+## Conclusion
 
+Starting from a straightforward implementation, using Go's profiling tools
+helped us to improve the speed by about 4x. I'm sure there are plenty more
+small changes that could further improve the performance, but this post is too
+long already!
 
+By mostly following the approach outlined here, I was able to speed up the
+[k-nucleotide benchmark] for Go by over 2x, from 55 seconds to 24. For a short
+while, this was the fastest Go version. Since then, many more improvements have
+been made, bringing it down to 15 seconds.
 
-## Caveat: Don't Do Any of This
-
-The usual advice about performance optimization applies
-
-Professional driver on a closed course.
-
-In this demo I created some pretty nasty code that I would not want to put in production.
-
-- "Should I use pointers for counting something with a map?"
-- "Do I need to reencode my data so each key fits in 64 bits?"
-- "Are Go maps so slow that I need to implement my own?"
-
-Probably not!
+[k-nucleotide benchmark]: http://benchmarksgame.alioth.debian.org/u64q/knucleotide-description.html#knucleotide
