@@ -1,5 +1,6 @@
 +++
 date = "2016-10-02"
+description = "Create a simple program, profile it, and make it go fast"
 draft = false
 title = "Learning Go: CPU Profiling"
 +++
