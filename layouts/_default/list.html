@@ -16,11 +16,13 @@
       {{- if not .Data.Pages }}
       <p>There aren't any posts yet! I'm working on it.</p>
       {{- else }}
-      <ul>
       {{- range .Data.Pages.ByDate.Reverse }}
-        <li><a href="{{ .Permalink }}">{{ .Date.Format "2006-01-02" }} - {{ .Title }}</a></li>
+      <section>
+        <h2><a href="{{ .Permalink }}">{{ .Title }}</a></h2>
+        <p>{{ .Description }}</p>
+        <time>{{ .Date.Format "2006-01-02" }}</time>
+      </section>
       {{- end }}
-      </ul>
       {{- end }}
       <footer>
         <h1>About</h1>

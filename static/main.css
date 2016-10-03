@@ -9,7 +9,7 @@ body {
   padding-right: 20px;
 }
 a {
-  text-decoration: none;
+  color: #222;
 }
 header {
   margin: 48px;
@@ -20,17 +20,30 @@ header h1 {
 }
 header a {
   color: #222;
+  text-decoration: none;
 }
 main {
+  margin: auto;
+  max-width: 600px;
   text-align: center;
 }
 main h1 {
+  font-size: 36px;
   margin: 48px;
 }
-main ul {
-  display: inline-block;
+main section {
+  margin-bottom: 32px;
+  margin-top: 32px;
+}
+main h2 {
+  font-size: 26px;
   margin: 0;
-  text-align: left;
+}
+main section p {
+  margin: 2px;
+}
+main time{
+  font-size: 16px;
 }
 article h1 {
   font-size: 32px;
