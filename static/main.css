@@ -79,6 +79,11 @@ pre {
 code {
   font-family: "Consolas", "Menlo", "Monaco", "Lucida Console", "Liberation Mono", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Courier New", monospace;
 }
+cite {
+  display: block;
+  margin-top: 10px;
+  text-align: center;
+}
 article footer {
   margin-top: 100px;
 }
