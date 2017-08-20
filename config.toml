@@ -1,4 +1,4 @@
-baseurl = "http://jalan.io/"
+baseurl = "https://jalan.io/"
 disable404 = true
 disableRSS = true
 disableSitemap = true
