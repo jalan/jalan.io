@@ -1,13 +1,13 @@
 +++
 date = "2016-10-02"
+lastmod = "2017-08-20"
 description = "Create a simple program, profile it, and make it go fast"
 draft = false
 title = "Learning Go: CPU Profiling"
 +++
 
-This is the first post in what I hope becomes a series about learning the Go
-programming language (golang) and tools. This time, let's create a simple
-program, profile it, and try to make it go fast.
+In an effort to learn about the Go programming language (golang) and tools,
+let's create a simple program, profile it, and try to make it go fast.
 
 
 ## How about a game?
@@ -460,6 +460,6 @@ long already!
 By mostly following the approach outlined here, I was able to speed up the
 [k-nucleotide benchmark] for Go by over 2x, from 55 seconds to 24. For a short
 while, this was the fastest Go version. Since then, many more improvements have
-been made, bringing it down to 15 seconds.
+been made, bringing it down to 16 seconds.
 
 [k-nucleotide benchmark]: http://benchmarksgame.alioth.debian.org/u64q/knucleotide-description.html#knucleotide
