@@ -1,6 +1,6 @@
 +++
 date = "2016-10-02"
-lastmod = "2017-08-20"
+lastmod = "2019-05-28"
 description = "Create a simple program, profile it, and make it go fast"
 draft = false
 title = "Learning Go: CPU Profiling"
@@ -20,9 +20,9 @@ adaptation of that benchmark &mdash; not exactly that benchmark, but a simple
 imitation of it, close enough that whatever we learn here can also help us
 there. These are our requirements:
 
-[The Computer Language Benchmarks Game]: http://benchmarksgame.alioth.debian.org/
-[k-nucleotide benchmark]: http://benchmarksgame.alioth.debian.org/u64q/knucleotide-description.html#knucleotide
-[has not performed the best]: http://benchmarksgame.alioth.debian.org/u64q/performance.php?test=knucleotide
+[The Computer Language Benchmarks Game]: https://benchmarksgame-team.pages.debian.net/benchmarksgame/
+[k-nucleotide benchmark]: https://benchmarksgame-team.pages.debian.net/benchmarksgame/description/knucleotide.html#knucleotide
+[has not performed the best]: https://benchmarksgame-team.pages.debian.net/benchmarksgame/performance/knucleotide.html
 
 1. Read a DNA sequence from standard input. It will look something like this:
 
@@ -462,4 +462,4 @@ By mostly following the approach outlined here, I was able to speed up the
 while, this was the fastest Go version. Since then, many more improvements have
 been made, bringing it down to 16 seconds.
 
-[k-nucleotide benchmark]: http://benchmarksgame.alioth.debian.org/u64q/knucleotide-description.html#knucleotide
+[k-nucleotide benchmark]: https://benchmarksgame-team.pages.debian.net/benchmarksgame/description/knucleotide.html#knucleotide
