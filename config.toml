@@ -1,7 +1,5 @@
-baseurl = "https://jalan.io/"
-disable404 = true
-disableRSS = true
-disableSitemap = true
+baseURL = "https://jalan.io/"
+disableKinds = ["404", "RSS", "sitemap"]
 relativeURLs = true
 title = "jalan.io"
 
